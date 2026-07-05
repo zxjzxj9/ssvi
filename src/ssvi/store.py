@@ -23,11 +23,16 @@ def load_history() -> pd.DataFrame:
     return pd.concat([pd.read_parquet(f) for f in files], ignore_index=True)
 
 
-def iv_rank(history: pd.DataFrame, underlying: str, current_iv30: float,
-            min_obs: int = 20) -> float:
-    if history.empty or "iv30" not in history.columns:
+def metric_rank(history: pd.DataFrame, underlying: str, column: str,
+                current: float, min_obs: int = 20) -> float:
+    if history.empty or column not in history.columns:
         return float("nan")
-    vals = history.loc[history["underlying"] == underlying, "iv30"].dropna()
+    vals = history.loc[history["underlying"] == underlying, column].dropna()
     if len(vals) < min_obs:
         return float("nan")
-    return float(100.0 * np.mean(vals <= current_iv30))
+    return float(100.0 * np.mean(vals <= current))
+
+
+def iv_rank(history: pd.DataFrame, underlying: str, current_iv30: float,
+            min_obs: int = 20) -> float:
+    return metric_rank(history, underlying, "iv30", current_iv30, min_obs)

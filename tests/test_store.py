@@ -51,3 +51,15 @@ def test_iv_rank_insufficient_history():
                          "date": ["2026-07-01"] * 5,
                          "iv30": [0.4] * 5})
     assert np.isnan(store.iv_rank(hist, "NVDA", 0.45, min_obs=20))
+
+
+def test_metric_rank_generalizes():
+    hist = pd.DataFrame({
+        "underlying": ["NVDA"] * 25,
+        "date": [f"2026-06-{d:02d}" for d in range(1, 26)],
+        "iv30": np.linspace(0.30, 0.54, 25),
+        "iv1y": np.linspace(0.25, 0.49, 25),
+    })
+    assert store.metric_rank(hist, "NVDA", "iv1y", 0.49) == pytest.approx(100.0)
+    assert store.metric_rank(hist, "NVDA", "iv1y", 0.10) == pytest.approx(0.0)
+    assert np.isnan(store.metric_rank(hist, "NVDA", "missing_col", 0.4))
