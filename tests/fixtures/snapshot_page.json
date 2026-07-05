@@ -1,0 +1,25 @@
+{
+  "results": [
+    {
+      "details": {"ticker": "O:AAPL260618C00200000", "contract_type": "call",
+                  "strike_price": 200.0, "expiration_date": "2026-06-18"},
+      "day": {"close": 12.8, "volume": 320, "last_updated": 1751500000000000000},
+      "greeks": {},
+      "open_interest": 1500
+    },
+    {
+      "details": {"ticker": "O:AAPL260618P00200000", "contract_type": "put",
+                  "strike_price": 200.0, "expiration_date": "2026-06-18"},
+      "day": {"close": 7.2, "volume": 150, "last_updated": 1751500000000000000},
+      "greeks": {},
+      "open_interest": 900
+    },
+    {
+      "details": {"ticker": "O:AAPL260618C00300000", "contract_type": "call",
+                  "strike_price": 300.0, "expiration_date": "2026-06-18"},
+      "day": {},
+      "greeks": {},
+      "open_interest": 10
+    }
+  ]
+}
