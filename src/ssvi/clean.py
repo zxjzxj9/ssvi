@@ -24,7 +24,7 @@ def prepare(chain_df: pd.DataFrame, asof: pd.Timestamp) -> pd.DataFrame:
         & (df["last_updated"] >= stale_cutoff)
     ]
     df["T"] = (df["expiry"] - asof).dt.days / 365.0
-    df = df[df["T"] > 1 / 365]
+    df = df[df["T"] > config.MIN_DTE / 365]
 
     out = []
     for expiry, g in df.groupby("expiry"):

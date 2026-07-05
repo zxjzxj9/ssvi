@@ -23,9 +23,16 @@ def test_wheel_score_ordering():
     assert score_wheel(rich) > score_wheel(poor)
 
 
-def test_wheel_rejects_negative_vrp_and_arb():
+def test_wheel_rejects_negative_vrp():
     assert score_wheel(base_metrics(vrp=-0.02)) == float("-inf")
-    assert score_wheel(base_metrics(arb_flags="butterfly")) == float("-inf")
+
+
+def test_wheel_and_leaps_do_not_veto_on_arb_flags():
+    # arb_flags is a diagnostic column, not an automatic veto: a single
+    # global SSVI fit routinely flags *some* distant tenor on real
+    # single-stock smiles, and that shouldn't zero out every signal.
+    assert math.isfinite(score_wheel(base_metrics(arb_flags="butterfly")))
+    assert math.isfinite(score_leaps(base_metrics(arb_flags="butterfly")))
 
 
 def test_wheel_handles_nan_iv_rank():

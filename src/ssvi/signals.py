@@ -12,15 +12,19 @@ def _or50(x: float) -> float:
 
 
 def score_wheel(m: dict) -> float:
-    if m["arb_flags"] or m["vrp"] <= 0:
+    # Note: arb_flags is surfaced as a diagnostic column, not vetoed here.
+    # A single global 3-parameter SSVI power-law routinely fails strict
+    # butterfly bounds *somewhere* on richly-skewed single-stock smiles
+    # (it was designed for smoother index surfaces like SPX) -- vetoing
+    # the whole ticker over a flag at some unrelated distant tenor would
+    # empty out every real name. Only VRP <= 0 (no premium) blocks a trade.
+    if m["vrp"] <= 0:
         return float("-inf")
     return (100 * m["vrp"] + 50 * m["rr25_30d"]
             + 0.2 * _or50(m["iv_rank"]))
 
 
 def score_leaps(m: dict) -> float:
-    if m["arb_flags"]:
-        return float("-inf")
     return (0.5 * (100 - _or50(m.get("iv1y_rank")))
             + 100 * max(m["term_slope"], 0.0))
 
@@ -39,9 +43,11 @@ def suggest_strikes(surface: SSVISurface, spot: float) -> dict:
 
 
 _WHEEL_COLS = ["underlying", "score", "iv30", "iv1y", "vrp", "rr25_30d",
-               "iv_rank", "term_slope", "spot", "wheel_put_strike"]
+               "iv_rank", "term_slope", "spot", "wheel_put_strike",
+               "arb_flags"]
 _LEAPS_COLS = ["underlying", "score", "iv30", "iv1y", "vrp", "rr25_30d",
-               "iv_rank", "term_slope", "spot", "leaps_call_strike"]
+               "iv_rank", "term_slope", "spot", "leaps_call_strike",
+               "arb_flags"]
 
 
 def build_report(rows: list[dict]) -> tuple[pd.DataFrame, pd.DataFrame]:

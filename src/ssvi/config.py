@@ -33,6 +33,8 @@ PLOTS_DIR = _ROOT / "plots"
 # Liquidity filters applied to raw chains
 MIN_OPEN_INTEREST = 10
 MAX_STALE_DAYS = 5          # drop contracts whose last trade is older than this
+MIN_DTE = 7                 # drop near-0DTE expiries: irrelevant to both
+                            # strategies below and too sparse/noisy to fit
 SHORT_DTE_MAX = 45          # short-vol strategy horizon
 LEAPS_T_MIN = 1.0           # years; long-vol strategy horizon
 

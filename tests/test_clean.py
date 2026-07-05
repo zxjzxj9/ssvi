@@ -60,3 +60,13 @@ def test_expired_and_unpaired_expiries_dropped():
     expired = make_row(expiry=ASOF)
     df = prepare(pd.DataFrame([lonely_call, expired]), asof=ASOF)
     assert df.empty
+
+
+def test_near_0dte_expiries_excluded():
+    # 3 DTE: irrelevant to both target strategies (<=45d selling, >=1y
+    # buying) and too sparse/noisy to include in the global SSVI fit.
+    near_expiry = ASOF + pd.Timedelta(days=3)
+    c, p = parity_pair(strike=100.0, forward=100.0, T=3 / 365)
+    c["expiry"] = p["expiry"] = near_expiry
+    df = prepare(pd.DataFrame([c, p]), asof=ASOF)
+    assert df.empty
